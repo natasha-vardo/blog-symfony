@@ -6,6 +6,8 @@
  * Time: 14:17
  */
 
+declare(strict_types = 1);
+
 namespace App\Controller;
 
 use App\Form\UserType;

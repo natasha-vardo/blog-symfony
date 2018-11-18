@@ -6,6 +6,8 @@
  * Time: 13:29
  */
 
+declare(strict_types = 1);
+
 namespace App\Controller;
 
 use App\Entity\Post;
@@ -36,7 +38,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/admin", name="admin")
+     * @Route("/admin", name="admin_page")
      */
 
     public function users()
@@ -56,11 +58,15 @@ class SecurityController extends Controller
      * @Route("/user", name="user_page")
      */
     public function homepage()
-
     {
-
-        return new Response('<html><body>User Page</body></html>');
+        return $this->render('users/uspage.html.twig');
     }
 
-
+    /**
+     * @Route("/", name="start_page")
+     */
+    public function startpage()
+    {
+        return $this->render('start/start-page.html.twig');
+    }
 }

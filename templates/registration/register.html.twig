@@ -1,3 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registration{% endblock %}
+{% block body %}
 {{ form_start(form) }}
     {{ form_row(form.username) }}
     {{ form_row(form.firstname) }}
@@ -6,5 +10,10 @@
     {{ form_row(form.plainPassword.first) }}
     {{ form_row(form.plainPassword.second) }}
 
-<button type="submit">Register!</button>
+<input type="checkbox" id="be_blogger" name="_be_blogger" value=""/>
+<label for="be_blogger">I want to be a blogger</label>
+<br>
+<button type="submit" class="btn btn-primary">Register!</button>
 {{ form_end(form) }}
+
+{% endblock %}

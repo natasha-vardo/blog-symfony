@@ -6,6 +6,8 @@
  * Time: 14:16
  */
 
+declare(strict_types = 1);
+
 namespace App\Controller;
 use App\Entity\Post;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
