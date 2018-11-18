@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <table class="lux">
+        <thead>
+        <tr>
+            <td>Author</td>
+            <td>Posts</td>
+        </tr>
+        </thead>
+        {% for posts in post %}
+            <tr>
+                <td>{{ posts.id}}</td>
+                <td>{{ posts.title }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {# wow!#}
+
+{% endblock %}
