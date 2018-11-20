@@ -38,15 +38,6 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/admin", name="admin_page")
-     */
-
-    public function users()
-    {
-        return new Response('<html><body>Admin Page</body></html>');
-    }
-
-    /**
      * @Route("/forgot-pass", name="forgot_pass")
      */
     public function forgot()
@@ -63,10 +54,10 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/", name="start_page")
+     * @Route("/", name="all_posts")
      */
     public function startpage()
     {
-        return $this->render('start/start-page.html.twig');
+        return $this->render('start/all-posts.html.twig');
     }
 }

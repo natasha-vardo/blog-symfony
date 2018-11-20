@@ -45,6 +45,11 @@ class RegistrationController extends AbstractController
             // ... do any other work - like sending them an email, etc
             // maybe set a "flash" success message for the user
 
+            //$form->getData();
+           // dump($form->getData());
+            //dump($form->get("blogger")->getData());
+            //exit();
+
             return $this->redirectToRoute('login');
         }
 
