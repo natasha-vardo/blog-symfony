@@ -30,6 +30,11 @@ security:
 
             logout:
                 path: app_logout
+
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
                 #default_target_path: admin
             # https://symfony.com/doc/current/security/form_login_setup.html
 

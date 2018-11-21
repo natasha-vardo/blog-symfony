@@ -17,7 +17,10 @@
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="_password" />
     </div>
-    <input type="hidden" name="_target_path" value="{{ path('admin_page') }}" />
+
+    <input type="checkbox" id="remember_me" name="_remember_me" />
+    <label for="remember_me">Remember me</label>
+
     <input type="hidden" name="_target_path" value="{{ path('user_page') }}" /><div class="form-group">
     <button type="submit" class="btn btn-primary">Login</button>
     </div>

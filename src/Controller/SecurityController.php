@@ -60,4 +60,6 @@ class SecurityController extends Controller
     {
         return $this->render('start/all-posts.html.twig');
     }
+
+
 }

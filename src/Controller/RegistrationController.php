@@ -20,35 +20,67 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class RegistrationController extends AbstractController
 {
 
+    private $mailer;
+
+    public function __construct(\Swift_Mailer $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
+
     /**
      * @Route("/register", name="user_registration")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
-        // 1) build the form
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
-        // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
-            // 4) save the User!
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
+            $firstname_form = $form->get("firstname")->getData();
+            $lastname_form = $form->get("lastname")->getData();
+            $email_form = $form->get("email")->getData();
+            $chech = $form->get("blogger")->getData();
 
-            //$form->getData();
-           // dump($form->getData());
-            //dump($form->get("blogger")->getData());
-            //exit();
+            $message = (new \Swift_Message('Hello Email'))
+                ->setFrom('blog@example.com')
+                ->setTo($email_form)
+                ->setBody(
+                    $this->renderView(
+                        'emails/registration.html.twig',
+                        array('firstname' => $firstname_form,
+                            'lastname' => $lastname_form)
+                    ),
+                    'text/html'
+                );
+
+            $this->mailer->send($message);
+
+            if($chech == true) {
+                $message = (new \Swift_Message('Hello Email'))
+                    ->setFrom($email_form)
+                    ->setTo(['mod1@mail.ru', 'mod2@mail.ru'])
+                    ->setBody(
+                        $this->renderView(
+                            'emails/be-blogger.html.twig',
+                            array('firstname' => $firstname_form,
+                                'lastname' => $lastname_form,
+                                'email' => $email_form)
+                        ),
+                        'text/html'
+                    );
+
+                $this->mailer->send($message);
+            }
 
             return $this->redirectToRoute('login');
         }
@@ -58,4 +90,5 @@ class RegistrationController extends AbstractController
             array('form' => $form->createView())
         );
     }
+
 }

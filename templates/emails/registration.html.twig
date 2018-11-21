@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h3>You did it! You registered!</h3>
+
+    <p>Hi {{ firstname }} {{ lastname }}! You're successfully registered.</p>
+
+    {# example, assuming you have a route named "login" #}
+    {#To login, go to: <a href="{{ url('login') }}">...</a>.
+    #}
+    <p>Thanks!</p>
+
+{% endblock %}
