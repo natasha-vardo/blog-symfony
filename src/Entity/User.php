@@ -86,6 +86,7 @@ class User implements UserInterface, \Serializable
     {
         $this->roles = array('ROLE_USER');
         $this->isActive = true;
+        $this->posts = new ArrayCollection();
     }
 
     /* public function __construct()

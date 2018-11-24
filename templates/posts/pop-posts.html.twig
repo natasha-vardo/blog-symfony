@@ -5,7 +5,7 @@
 
     <h1>Posts</h1>
     {% for posts in post %}
-        <a href="{{ path('post_one', {'id': posts.id })}}">Post: {{ posts.title }}</a><br>
+        <a href="{{ path('pop_one_post', {'id': posts.id })}}">Post: {{ posts.title }}</a><br>
         {{ posts.description }}<br>
         {{ posts.created| date("d.m.Y") }}<br>
         <hr>

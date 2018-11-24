@@ -19,22 +19,38 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    // /**
-    //  * @return Post[] Returns an array of Post objects
-    //  */
-    /*
-    public function findByExampleField($value)
+     /**
+    / * @return Post[] Returns an array of Post objects
+      */
+
+    public function findByDate()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('post')
+            ->join('post.author', 'username')
+            ->where('post.isActive = :active')
+            ->setParameter('active', 1)
+            ->orderBy('post.created', 'DESC')
+            //->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+
+    public function findByLikes()
+    {
+        return $this->createQueryBuilder('post')
+            ->join('post.author', 'username')
+            ->orderBy('post.likes', 'ASC')
+            ->where('post.isActive = :active')
+            ->setParameter('active', 1)
+            ->andWhere('post.created > :date')
+            ->setParameter('date', date('Y-m-d H:i:s', time() - 86400 * 7))
+            //->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 
     /*
     public function findOneBySomeField($value): ?Post
@@ -47,4 +63,5 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
     */
+
 }

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts list{% endblock %}
+{% block body %}
+
+    <h1>Post {{ post.title }}</h1>
+    <hr>
+    Created: {{ post.created| date("d.m.Y") }}<br>
+    Author: {{ name }}<br>
+    Description: {{ post.description }}<br>
+    Content: {{ post.content }}<br>
+
+{% endblock %}
