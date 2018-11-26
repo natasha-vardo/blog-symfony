@@ -27,7 +27,6 @@ class RegistrationController extends AbstractController
         $this->mailer = $mailer;
     }
 
-
     /**
      * @Route("/register", name="user_registration")
      */

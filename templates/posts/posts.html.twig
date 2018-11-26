@@ -5,6 +5,7 @@
 
     <h1>Posts</h1>
     {% for posts in post %}
+        Author:{{ posts.author.username }}<br>
         <a href="{{ path('post_one', {'id': posts.id })}}">Post: {{ posts.title }}</a><br>
         {{ posts.description }}<br>
         {{ posts.created| date("d.m.Y") }}<br>

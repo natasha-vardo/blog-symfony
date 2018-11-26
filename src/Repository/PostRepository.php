@@ -40,7 +40,7 @@ class PostRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('post')
             ->join('post.author', 'username')
-            ->orderBy('post.likes', 'ASC')
+            ->orderBy('post.likes', 'DESC')
             ->where('post.isActive = :active')
             ->setParameter('active', 1)
             ->andWhere('post.created > :date')

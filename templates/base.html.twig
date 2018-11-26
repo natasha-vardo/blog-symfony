@@ -52,7 +52,7 @@
                     {% if is_granted('ROLE_USER') %}
                         <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More...</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="#">My Profile</a>
+                            <a class="dropdown-item" href="{{ path('edit_my_profile') }}">My Profile</a>
                             <a class="dropdown-item" href="/logout">Logout</a>
                         </div>
                     {% endif %}
