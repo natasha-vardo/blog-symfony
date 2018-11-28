@@ -2,8 +2,9 @@
 
 {% block title %}Posts list{% endblock %}
 {% block body %}
-
+    <ul>
     {% for posts in post %}
+        <li>
         <h4><a href="{{ path('post_one', {'id': posts.id })}}">Post: {{ posts.title }}</a></h4>
         Description: {{ posts.description }}<br>
         Author: <a href="{{ path('blogger_post', {'username': posts.author.username })}}">@{{ posts.author.username }}</a><br>
@@ -15,7 +16,20 @@
         {% endif %}
         Likes: {{ posts.likes }}<br>
         <hr>
+        </li>
 
     {% endfor %}
+    </ul>
+   {# <ul>
+    {% for postpags in postpag %}
+        <li>
+            {{ postpags.description }}
+        </li>
+    {% endfor %}
+    </ul>#}
+
+    <div class="pagination">
+        {{ knp_pagination_render(post) }}
+    </div>
 
 {% endblock %}
