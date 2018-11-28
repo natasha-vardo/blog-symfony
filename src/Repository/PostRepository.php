@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -51,7 +52,33 @@ class PostRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findMyPosts($username)
+    {
+        return $this->createQueryBuilder('post')
+            ->join('post.author', 'user')
+            ->where('user.username = :author')
+            ->setParameter('author', $username)
+            ->orderBy('post.created', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
 
+    }
+
+    public function findBloggerPosts($username)
+    {
+        return $this->createQueryBuilder('post')
+            ->join('post.author', 'user')
+            ->where('user.username = :author')
+            ->andWhere('post.isActive = :active')
+            ->setParameter('author', $username)
+            ->setParameter('active', 1)
+            ->orderBy('post.created', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+
+    }
     /*
     public function findOneBySomeField($value): ?Post
     {

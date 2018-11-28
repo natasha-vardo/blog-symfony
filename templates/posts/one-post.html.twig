@@ -8,7 +8,7 @@
             <div class="card-body">
                 <h5 class="card-title">
                     {{ user.username }}
-                    <small class="text-muted">· @{{ user.username }}</small>
+                    <small class="text-muted">· <a href="{{ path('blogger_post', {'username': user.username })}}">@{{ user.username }}</a></small>
                 </h5>
 
                {% if is_granted('ROLE_USER') and user != app.user %}
@@ -59,9 +59,13 @@
     <h1>Post {{ post.title }}</h1>
     <hr>
     Created: {{ post.created| date("d.m.Y") }}<br>
-    Author: {{ user.username }}<br>
+    Author: <a href="{{ path('blogger_post', {'username': user.username })}}">@{{ user.username }}</a><br>
     Description: {{ post.description }}<br>
     Content: {{ post.content }}<br>
-    <img src="{{ asset('uploads/images/'~post.image) }}"/><br>
+    {% if post.image is empty %}
+        <img src="{{ asset('uploads/images/noimage.jpg') }}" height="450px"/><br>
+    {% else %}
+        <img src="{{ asset('uploads/images/'~post.image) }}" height="450px"/><br>
+    {% endif %}
 
 {% endblock %}

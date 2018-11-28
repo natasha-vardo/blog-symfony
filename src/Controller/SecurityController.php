@@ -48,7 +48,7 @@ class SecurityController extends Controller
     /**
      * @Route("/user", name="user_page")
      */
-    public function homepage()
+    public function home()
     {
         return $this->render('users/uspage.html.twig');
     }
@@ -56,9 +56,11 @@ class SecurityController extends Controller
     /**
      * @Route("/", name="all_posts")
      */
-    public function startpage()
+    public function homepage()
     {
-        return $this->render('start/all-posts.html.twig');
+        $post = $this->getDoctrine()
+            ->getRepository(Post::class)->findByDate();
+        return $this->render('posts/posts.html.twig', ['post' =>$post]);
     }
 
 

@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Posts list{% endblock %}
+{% block title %}My posts{% endblock %}
 {% block body %}
 
     {% for posts in post %}
-        <h4><a href="{{ path('pop_one_post', {'id': posts.id })}}">Post: {{ posts.title }}</a></h4>
+        <h4>Post {{ posts.title }}</h4>
         Description: {{ posts.description }}<br>
-        Author: <a href="{{ path('blogger_post', {'username': posts.author.username })}}">@{{ posts.author.username }}</a><br>
+        Author:{{ posts.author.username }}<br>
         {{ posts.created| date("d.m.Y") }}<br>
         {% if posts.image is empty %}
             <img src="{{ asset('uploads/images/noimage.jpg') }}" height="100px"/><br>
@@ -14,8 +14,15 @@
             <img src="{{ asset('uploads/images/'~posts.image) }}" height="100px"/><br>
         {% endif %}
         Likes: {{ posts.likes }}<br>
+        {% if posts.isactive == true %}
+            Active post <br>
+        {% else %}
+            Blocked post <br>
+        {% endif %}
         <hr>
 
     {% endfor %}
+
+
 
 {% endblock %}

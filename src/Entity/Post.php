@@ -160,4 +160,13 @@ class Post
         $this->likes = $likes;
     }
 
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
 }
