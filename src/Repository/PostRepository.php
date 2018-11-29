@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -79,16 +80,18 @@ class PostRepository extends ServiceEntityRepository
             ;
 
     }
-    /*
-    public function findOneBySomeField($value): ?Post
+
+    public function findPreferences(Collection $users)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb->select('p')
+            ->where('p.author IN (:following)')
+            ->setParameter('following', $users)
+            ->orderBy('p.created', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
 
 }

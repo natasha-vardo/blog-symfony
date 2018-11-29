@@ -56,10 +56,22 @@ class SecurityController extends Controller
     /**
      * @Route("/", name="all_posts")
      */
-    public function homepage()
+    public function homepage(Request $request)
     {
-        $post = $this->getDoctrine()
+        $postdata = $this->getDoctrine()
             ->getRepository(Post::class)->findByDate();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $post = $paginator->paginate(
+        // Doctrine Query, not results
+            $postdata,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            10
+        );
+
         return $this->render('posts/posts.html.twig', ['post' =>$post]);
     }
 

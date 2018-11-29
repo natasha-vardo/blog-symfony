@@ -1,10 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Posts list{% endblock %}
+{% block title %}Preferences{% endblock %}
 {% block body %}
 
+    {% if usersToFollow|length < 0 %}
+        <p>You do not follow anyone... </p>
+
+    {% else %}
+
     <ul>
-    {% for posts in post %}
+        {% for posts in post %}
         <li>
             <h4><a href="{{ path('post_one', {'id': posts.id })}}">Post: {{ posts.title }}</a></h4>
             Description: {{ posts.description }}<br>
@@ -13,16 +18,16 @@
             {% if posts.image is empty %}
                 <img src="{{ asset('uploads/images/noimage.jpg') }}" height="100px"/><br>
             {% else %}
-            <img src="{{ asset('uploads/images/'~posts.image) }}" height="100px"/><br>
+                <img src="{{ asset('uploads/images/'~posts.image) }}" height="100px"/><br>
             {% endif %}
             Likes: {{ posts.likes }}<br>
             <hr>
         </li>
-    {% endfor %}
+        {% endfor %}
     </ul>
+    {% endif %}
 
     <div class="pagination">
         {{ knp_pagination_render(post) }}
     </div>
-
 {% endblock %}
