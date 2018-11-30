@@ -20,7 +20,7 @@
             {% else %}
                 <img src="{{ asset('uploads/images/'~posts.image) }}" height="100px"/><br>
             {% endif %}
-            Likes: {{ posts.likes }}<br>
+            Likes: {{ posts.getLikedBy.count }}<br>
             <hr>
         </li>
         {% endfor %}

@@ -32,7 +32,6 @@ class PostRepository extends ServiceEntityRepository
             ->where('post.isActive = :active')
             ->setParameter('active', 1)
             ->orderBy('post.created', 'DESC')
-            //->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
@@ -42,12 +41,11 @@ class PostRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('post')
             ->join('post.author', 'username')
-            ->orderBy('post.likes', 'DESC')
+            ->orderBy('post.created', 'DESC')
             ->where('post.isActive = :active')
             ->setParameter('active', 1)
             ->andWhere('post.created > :date')
             ->setParameter('date', date('Y-m-d H:i:s', time() - 86400 * 7))
-            //->setMaxResults(10)
             ->getQuery()
             ->getResult()
             ;

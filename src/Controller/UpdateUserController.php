@@ -6,9 +6,12 @@
  * Time: 19:41
  */
 
+declare(strict_types = 1);
+
 namespace App\Controller;
 
 use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\UserType;
@@ -35,7 +38,6 @@ class UpdateUserController extends AbstractController
         $id = (int)$userId;
 
         $updateUser = $this->getDoctrine()->getRepository(User::class)->find($id);
-        //$form = $this->createForm(UserType::class, $updateUser);
 
         $form = $this->createFormBuilder($updateUser)
             ->add('email', EmailType::class)
@@ -62,13 +64,14 @@ class UpdateUserController extends AbstractController
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
             ))
+            ->add('user_description', TextareaType::class, ['label' => 'About me: ', 'attr' => ['cols' => '50', 'rows' => '4']])
         ->getForm();
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($updateUser);
             $entityManager->flush();
-            return $this->redirectToRoute('posts_list');
+            return $this->redirectToRoute('edit_my_profile');
         }
 
         return $this->render('users/edit-my-profile.html.twig', array(

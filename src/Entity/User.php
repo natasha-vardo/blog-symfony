@@ -100,6 +100,16 @@ class User implements UserInterface, \Serializable
      */
     private $following;
 
+    /**
+     * @ORM\Column(name="user_description", type="text", nullable=true)
+     */
+    private $userDescription;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="likedBy")
+     */
+    private $postsLiked;
+
     public function __construct()
     {
         $this->roles = array('ROLE_USER');
@@ -107,6 +117,7 @@ class User implements UserInterface, \Serializable
         $this->posts = new ArrayCollection();
         $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
+        $this->postsLiked = new ArrayCollection();
     }
 
     public function getId() {
@@ -258,6 +269,24 @@ class User implements UserInterface, \Serializable
     public function getFollowing()
     {
         return $this->following;
+    }
+
+    public function getUserDescription()
+    {
+        return $this->userDescription;
+    }
+
+    public function setUserDescription($userDescription)
+    {
+        $this->userDescription = $userDescription;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPostsLiked()
+    {
+        return $this->postsLiked;
     }
 
 }

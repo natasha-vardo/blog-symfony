@@ -9,6 +9,7 @@
 declare(strict_types = 1);
 
 namespace App\Controller;
+
 use App\Entity\Post;
 use App\Form\PostType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\UserType;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

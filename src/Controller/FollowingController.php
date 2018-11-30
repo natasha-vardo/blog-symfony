@@ -6,6 +6,8 @@
  * Time: 14:03
  */
 
+declare(strict_types = 1);
+
 namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
