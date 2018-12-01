@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin page{% endblock %}
+{% block body %}
+    <a href="{{ path('admin_page_users') }}" class="btn btn-primary">Users</a>
+    <a href="{{ path('admin_page_posts') }}" class="btn btn-primary">Posts</a>
+{% endblock %}

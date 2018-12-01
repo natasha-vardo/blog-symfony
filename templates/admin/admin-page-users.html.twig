@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users list{% endblock %}
+{% block body %}
+    <p>Back to <a href="{{ path('admin_page') }}">Admin page</a>.</p>
+
+    <table id="admin_user" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email</th>
+            <th>Username</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Status</th>
+            <th>Role</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <ul>
+            {% for users in user %}
+                <li>
+                    <tr>
+                        <td>{{ users.id }}</td>
+                        <td>{{ users.email }}</td>
+                        <td>{{ users.username }}</td>
+                        <td>{{ users.firstname }}</td>
+                        <td>{{ users.lastname }}</td>
+                        <td>{% if users.isactive == true %}
+                                Active user
+                            {% else %}
+                                Blocked user
+                            {% endif %}</td>
+                        <td>{#{{ users.roles}}#}</td>
+                        <td>{% if users.isactive == true %}
+                                <a href="{{ path('admin_blocked_users', {'id': users.id }) }}"
+                                   class="btn btn-secondary btn-sm">Block</a>
+                            {% else %}
+                                <a href="{{ path('admin_unblocked_users', {'id': users.id }) }}"
+                                   class="btn btn-success btn-sm">Unblock</a>
+                            {% endif %}</td>
+                        <td><a href="#" class="btn btn-outline-success btn-sm">Make Blogger</a></td>
+                        <td>{% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('admin_edit_users', {'id': users.id }) }}" class="btn btn-primary btn-sm">Edit</a>
+                            {% endif %}
+                        </td>
+                        <td>{% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" class="btn btn-danger delete-user btn-sm" data-id="{{ users.id }}">Delete</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </li>
+            {% endfor %}
+        </ul>
+        </tbody>
+    </table>
+    <div class="pagination">
+        {{ knp_pagination_render(user) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts list{% endblock %}
+{% block body %}
+    <p>Back to <a href="{{ path('admin_page') }}">Admin page</a>.</p>
+
+    <table id="admin_post" class="table table-striped">
+    <thead>
+    <tr>
+        <th>Publication date</th>
+        <th>Author</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+        <tbody>
+        <ul>
+        {% for posts in post %}
+            <li>
+                <tr>
+                    <td>{{ posts.created| date("d.m.Y") }}</td>
+                    <td>{{ posts.author.username }}</td>
+                    <td>{{ posts.title }}</td>
+                    <td>{% if posts.isactive == true %}
+                            Active post
+                        {% else %}
+                            Blocked post
+                        {% endif %}</td>
+                    <td>{% if posts.isactive == true %}
+                            <a href="{{ path('admin_blocked_posts', {'id': posts.id }) }}"
+                            class="btn btn-secondary btn-sm">Block</a>
+                        {% else %}
+                            <a href="{{ path('admin_unblocked_posts', {'id': posts.id }) }}"
+                               class="btn btn-success btn-sm">Unblock</a>
+                        {% endif %}
+                    </td>
+                    <td>{% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                        {% endif %}
+                    </td>
+                    <td>{% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" class="btn btn-danger delete-post btn-sm" data-id="{{ posts.id }}">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </li>
+        {% endfor %}
+    </ul>
+        </tbody>
+    </table>
+    <div class="pagination">
+        {{ knp_pagination_render(post) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}

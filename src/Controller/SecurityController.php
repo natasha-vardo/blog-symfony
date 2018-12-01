@@ -25,10 +25,8 @@ class SecurityController extends Controller
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils)
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', array(
@@ -46,14 +44,6 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route("/user", name="user_page")
-     */
-    public function home()
-    {
-        return $this->render('users/uspage.html.twig');
-    }
-
-    /**
      * @Route("/", name="all_posts")
      */
     public function homepage(Request $request)
@@ -64,11 +54,8 @@ class SecurityController extends Controller
         $paginator  = $this->get('knp_paginator');
 
         $post = $paginator->paginate(
-        // Doctrine Query, not results
             $postdata,
-            // Define the page parameter
             $request->query->getInt('page', 1),
-            // Items per page
             10
         );
 

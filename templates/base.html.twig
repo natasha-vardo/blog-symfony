@@ -39,7 +39,12 @@
                 {% endif %}
                 {% if is_granted('ROLE_ADMIN') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Administration</a>
+                        <a class="nav-link" href="{{ path('admin_page') }}">Administration</a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_MODERATOR') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin_page') }}">Administration</a>
                     </li>
                 {% endif %}
                 <li class="nav-item dropdown">

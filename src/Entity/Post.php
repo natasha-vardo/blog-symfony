@@ -36,7 +36,6 @@ class Post
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank(message="Please, upload the image.")
      * @Assert\File(mimeTypes={ "image/*" })
      */
     private $image;

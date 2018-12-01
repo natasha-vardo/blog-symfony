@@ -47,13 +47,13 @@ class UpdatePostController extends AbstractController
             ->add('title', TextType::class)
             ->add('description', TextType::class)
             ->add('content', TextareaType::class, ['attr' => ['cols' => '50', 'rows' => '7']])
-            ->add('image', FileType::class)
+            //->add('image', FileType::class)
             ->getForm();
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
-            $image = $post->getImage();
+          /*  $image = $post->getImage();
             $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
 
             try {
@@ -65,7 +65,7 @@ class UpdatePostController extends AbstractController
                 return new Response('<html><body>Error!</body></html>');
             }
 
-            $post->setImage($imageName);
+            $post->setImage($imageName);*/
             $entityManager->persist($updatePost);
             $entityManager->flush();
             return $this->redirectToRoute('my_post');

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+{% block body %}
+    {{ form_start(form) }}
+    <p>Edit personal information</p>
+    <hr>
+    {{ form_row(form.username) }}
+    {{ form_row(form.firstname) }}
+    {{ form_row(form.lastname) }}
+    {{ form_row(form.email) }}
+    <br>
+    <hr>
+    {{ form_row(form.user_description) }}
+    <br>
+    <hr>
+    {{ form_row(form.plainPassword.first) }}
+    {{ form_row(form.plainPassword.second) }}
+
+    <br>
+    <button type="submit" class="btn btn-primary">Update!</button>
+    {{ form_end(form) }}
+
+{% endblock %}

@@ -289,4 +289,13 @@ class User implements UserInterface, \Serializable
         return $this->postsLiked;
     }
 
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
 }
