@@ -42,13 +42,14 @@ class AdministrationController extends Controller
      */
     public function showPosts(Request $request)
     {
-        $postdata = $this->getDoctrine()
-            ->getRepository(Post::class)->findAll();
+        $em = $this->get('doctrine.orm.entity_manager');
+        $sql = "SELECT p FROM App\Entity\Post p";
+        $query = $em->createQuery($sql);
 
         $paginator  = $this->get('knp_paginator');
 
         $post = $paginator->paginate(
-            $postdata,
+            $query,
             $request->query->getInt('page', 1),
             10
         );
@@ -130,13 +131,14 @@ class AdministrationController extends Controller
      */
     public function showUsers(Request $request)
     {
-        $userdata = $this->getDoctrine()
-            ->getRepository(User::class)->findAll();
+        $em = $this->get('doctrine.orm.entity_manager');
+        $sql = "SELECT u FROM App\Entity\User u";
+        $query = $em->createQuery($sql);
 
         $paginator  = $this->get('knp_paginator');
 
         $user = $paginator->paginate(
-            $userdata,
+            $query,
             $request->query->getInt('page', 1),
             10
         );

@@ -7,9 +7,9 @@
     <table id="admin_post" class="table table-striped">
     <thead>
     <tr>
-        <th>Publication date</th>
+        <th>{{ knp_pagination_sortable(post, 'Publication date', 'p.created') }}</th>
         <th>Author</th>
-        <th>Title</th>
+        <th>{{ knp_pagination_sortable(post, 'Title', 'p.title') }}</th>
         <th>Status</th>
         <th></th>
         <th></th>

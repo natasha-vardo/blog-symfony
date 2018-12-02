@@ -8,10 +8,10 @@
         <thead>
         <tr>
             <th>Id</th>
-            <th>Email</th>
-            <th>Username</th>
+            <th>{{ knp_pagination_sortable(user, 'Email', 'u.email') }}</th>
+            <th>{{ knp_pagination_sortable(user, 'Username', 'u.username') }}</th>
             <th>First name</th>
-            <th>Last name</th>
+            <th>{{ knp_pagination_sortable(user, 'Last name', 'u.lastname') }}</th>
             <th>Status</th>
             <th>Role</th>
             <th></th>
