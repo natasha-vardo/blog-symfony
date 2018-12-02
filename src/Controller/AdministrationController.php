@@ -10,7 +10,9 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
-
+use App\Form\PostType;
+use App\Form\UserType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Entity\Post;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -18,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,6 +28,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class AdministrationController extends Controller
 {
@@ -124,6 +129,65 @@ class AdministrationController extends Controller
         );
 
         return $this->render('admin/admin-page-posts.html.twig', ['post' =>$post]);
+    }
+
+    /**
+     * @Route("/admin-page-posts/edit/{id}", name="admin_edit_posts")
+     */
+    public function editPost(Request $request, $id)
+    {
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $post = new Post();
+
+        $updatePost = $this->getDoctrine()->getRepository(Post::class)->find($id);
+
+        $form = $this->createFormBuilder($updatePost)
+            ->add('title', TextType::class)
+            ->add('description', TextType::class)
+            ->add('content', TextareaType::class, ['attr' => ['cols' => '50', 'rows' => '7']])
+            //->add('image', File::class, ['data_class' => null])
+            ->getForm();
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+
+          /*  $image = $post->getImage();
+
+            $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
+
+            try {
+                $image->move(
+                    $this->getParameter('uploads_images'),
+                    $imageName
+                );
+            } catch (FileException $e) {
+                return new Response('<html><body>Error!</body></html>');
+            }
+
+            //$post->setImage($imageName);
+            $post->setImage(
+                new File($this->getParameter('uploads_images').'/'.$post->getImage())
+            );*/
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($updatePost);
+            $entityManager->flush();
+            return $this->redirectToRoute('my_post');
+        }
+
+        return $this->render('admin/admin-page-edit-posts.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @return string
+     */
+    private function generateUniqueFileName()
+    {
+
+        return md5(uniqid());
     }
 
     /**

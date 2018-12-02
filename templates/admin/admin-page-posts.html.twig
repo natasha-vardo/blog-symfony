@@ -38,7 +38,7 @@
                         {% endif %}
                     </td>
                     <td>{% if is_granted('ROLE_ADMIN') %}
-                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{{ path('admin_edit_posts', {'id': posts.id }) }}" class="btn btn-primary btn-sm">Edit</a>
                         {% endif %}
                     </td>
                     <td>{% if is_granted('ROLE_ADMIN') %}

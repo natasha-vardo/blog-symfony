@@ -2,7 +2,6 @@
 
 {% block title %}Posts list{% endblock %}
 {% block body %}
-
     <ul>
     {% for posts in post %}
         <li>
@@ -24,5 +23,4 @@
     <div class="pagination">
         {{ knp_pagination_render(post) }}
     </div>
-
 {% endblock %}

@@ -76,6 +76,7 @@ class PostsController extends Controller
         $user = $tokenStorage->getToken()
             ->getUser();
         $post = new Post();
+
         $post->setAuthor($user);
         $form = $this->createForm(PostType::class, $post);
 

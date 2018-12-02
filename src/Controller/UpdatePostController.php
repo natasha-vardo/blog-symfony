@@ -13,6 +13,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Post;
 use App\Form\PostType;
+use Symfony\Component\HttpFoundation\File\File;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\HttpFoundation\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class UpdatePostController extends AbstractController
@@ -47,13 +47,14 @@ class UpdatePostController extends AbstractController
             ->add('title', TextType::class)
             ->add('description', TextType::class)
             ->add('content', TextareaType::class, ['attr' => ['cols' => '50', 'rows' => '7']])
-            //->add('image', FileType::class)
+            ->add('image', FileType::class, ['data_class' => null])
             ->getForm();
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
-          /*  $image = $post->getImage();
+            $image = $post->getImage();
+
             $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
 
             try {
@@ -65,7 +66,11 @@ class UpdatePostController extends AbstractController
                 return new Response('<html><body>Error!</body></html>');
             }
 
-            $post->setImage($imageName);*/
+            //$post->setImage($imageName);
+            $post->setImage(
+                new File($this->getParameter('uploads_images').'/'.$post->getImage())
+            );
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($updatePost);
             $entityManager->flush();
             return $this->redirectToRoute('my_post');

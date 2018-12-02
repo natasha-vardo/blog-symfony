@@ -10,6 +10,7 @@ namespace App\Form;
 
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,6 +27,7 @@ class PostType extends AbstractType
             ->add('content', TextareaType::class, ['attr' => ['cols' => '50', 'rows' => '7']])
             ->add('image', FileType::class, ['label' => 'Image'])
         ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
