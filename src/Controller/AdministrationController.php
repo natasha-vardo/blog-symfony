@@ -85,7 +85,17 @@ class AdministrationController extends Controller
         $entityManager->persist($blockPost);
         $entityManager->flush();
 
-        return $this->render('admin/admin-page.html.twig');
+        $postdata = $this->getDoctrine()
+            ->getRepository(Post::class)->findAll();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $post = $paginator->paginate(
+            $postdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+        return $this->render('admin/admin-page-posts.html.twig', ['post' =>$post]);
     }
 
     /**
@@ -101,7 +111,18 @@ class AdministrationController extends Controller
         $entityManager->persist($unblockPost);
         $entityManager->flush();
 
-        return $this->render('admin/admin-page.html.twig');
+        $postdata = $this->getDoctrine()
+            ->getRepository(Post::class)->findAll();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $post = $paginator->paginate(
+            $postdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('admin/admin-page-posts.html.twig', ['post' =>$post]);
     }
 
     /**
@@ -153,7 +174,18 @@ class AdministrationController extends Controller
         $entityManager->persist($blockUser);
         $entityManager->flush();
 
-        return $this->render('admin/admin-page.html.twig');
+        $userdata = $this->getDoctrine()
+            ->getRepository(User::class)->findAll();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $user = $paginator->paginate(
+            $userdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('admin/admin-page-users.html.twig', ['user' =>$user]);
     }
 
     /**
@@ -169,7 +201,18 @@ class AdministrationController extends Controller
         $entityManager->persist($unblockUser);
         $entityManager->flush();
 
-        return $this->render('admin/admin-page.html.twig');
+        $userdata = $this->getDoctrine()
+            ->getRepository(User::class)->findAll();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $user = $paginator->paginate(
+            $userdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('admin/admin-page-users.html.twig', ['user' =>$user]);
     }
 
     /**
@@ -218,5 +261,58 @@ class AdministrationController extends Controller
         return $this->render('admin/admin-page-edit.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+
+    /**
+     * @Route("/posts-admin/blocked/{id}", name="admin_block_posts")
+     */
+    public function blockedPostsAllPosts(Request $request, $id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $blockPost = $this->getDoctrine()->getRepository(Post::class)->find($id);
+
+        $blockPost->setIsActive(0);
+        $entityManager->persist($blockPost);
+        $entityManager->flush();
+
+        $postdata = $this->getDoctrine()
+            ->getRepository(Post::class)->findAll();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $post = $paginator->paginate(
+            $postdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+        return $this->render('posts/admin-posts.html.twig', ['post' =>$post]);
+    }
+
+    /**
+     * @Route("/posts-admin/unblocked/{id}", name="admin_unblock_posts")
+     */
+    public function unblockedPostsAllPosts(Request $request, $id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $unblockPost = $this->getDoctrine()->getRepository(Post::class)->find($id);
+
+        $unblockPost->setIsActive(1);
+        $entityManager->persist($unblockPost);
+        $entityManager->flush();
+
+        $postdata = $this->getDoctrine()
+            ->getRepository(Post::class)->findAll();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $post = $paginator->paginate(
+            $postdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('posts/admin-posts.html.twig', ['post' =>$post]);
     }
 }

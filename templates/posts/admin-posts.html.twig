@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts list{% endblock %}
+{% block body %}
+
+    <ul>
+        {% for posts in post %}
+            <li>
+                <h4><a href="{{ path('post_admin_one', {'id': posts.id })}}">Post: {{ posts.title }}</a></h4>
+                Description: {{ posts.description }}<br>
+                Author: <a href="{{ path('blogger_post', {'username': posts.author.username })}}">@{{ posts.author.username }}</a><br>
+                {{ posts.created| date("d.m.Y") }}<br>
+                {% if posts.image is empty %}
+                    <img src="{{ asset('uploads/images/noimage.jpg') }}" height="100px"/><br>
+                {% else %}
+                    <img src="{{ asset('uploads/images/'~posts.image) }}" height="100px"/><br>
+                {% endif %}
+                Likes: {{ posts.getLikedBy.count }}<br>
+                {% if posts.isactive == true %}
+                    <a href="{{ path('admin_block_posts', {'id': posts.id }) }}"
+                       class="btn btn-secondary btn-sm">Block</a>
+                {% else %}
+                    <a href="{{ path('admin_unblock_posts', {'id': posts.id }) }}"
+                       class="btn btn-success btn-sm">Unblock</a>
+                {% endif %}
+                <hr>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="pagination">
+        {{ knp_pagination_render(post) }}
+    </div>
+
+{% endblock %}

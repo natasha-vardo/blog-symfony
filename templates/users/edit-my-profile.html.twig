@@ -2,6 +2,55 @@
 
 {% block title %}My Profile{% endblock %}
 {% block body %}
+
+    <div class="card-group py-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ user.username }}
+                    {% if is_granted('ROLE_BLOGGER') %}
+                    <small class="text-muted">· <a href="{{ path('blogger_post', {'username': user.username })}}">@{{ user.username }}</a></small>
+                    {% endif %}
+                </h5>
+            </div>
+        </div>
+    </div>
+    {% if is_granted('ROLE_BLOGGER') %}
+    <div class="card-group py-2">
+        <div class="card">
+            <div class="card-body">
+                <h5>Followers</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for follower in user.followers %}
+                    <li class="list-group-item">
+                        <a href="{{ path('blogger_post', {'username': follower.username })}}">
+                            @{{ follower.username }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5>Following</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for following in user.following %}
+                    <li class="list-group-item">
+                        <a href="{{ path('blogger_post', {'username': following.username })}}">
+                            @{{ following.username }}
+                        </a>
+                        <a href="{{ path('following_unfollow_my_profile', {'id': following.id}) }}"
+                           class="btn btn-outline-danger btn-sm">Unfollow</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+    <hr>
+
     {{ form_start(form) }}
     <p>Edit your personal information</p>
     <hr>
@@ -22,6 +71,6 @@
     <br>
     <button type="submit" class="btn btn-primary">Update!</button>
     {{ form_end(form) }}
-
+<br>
 {% endblock %}
 

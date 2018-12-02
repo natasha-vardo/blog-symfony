@@ -154,7 +154,6 @@ class PostsController extends Controller
         return $this->render('posts/pop-one-post.html.twig', ['post' =>$post, 'user'=>$user]);
     }
 
-
     /**
      * @Route("/my-posts", name="my_post")
      */
@@ -184,7 +183,10 @@ class PostsController extends Controller
         $post = $this->getDoctrine()
             ->getRepository(Post::class)->findBloggerPosts($username);
 
-        return $this->render('posts/blogger-posts.html.twig', ['post' =>$post]);
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)->findOneBy(['username' => $username]);
+
+        return $this->render('posts/blogger-posts.html.twig', ['post' =>$post, 'user' =>$user]);
     }
 
     /**
@@ -230,5 +232,44 @@ class PostsController extends Controller
             ]
         );
     }
+
+    /**
+     * @Route("/posts-admin", name="posts_admin_list")
+     */
+    public function showAdminPosts(Request $request)
+    {
+        $postdata = $this->getDoctrine()
+            ->getRepository(Post::class)->findByDateAdmin();
+
+        $paginator  = $this->get('knp_paginator');
+
+        $post = $paginator->paginate(
+            $postdata,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('posts/admin-posts.html.twig', ['post' =>$post]);
+    }
+
+    /**
+     * @Route("/posts-admin/{id}", name="post_admin_one", requirements={"id":"[0-9]+"})
+     */
+    public function showAdminOnePost($id)
+    {
+        $post = $this->getDoctrine()
+            ->getRepository(Post::class)->find($id);
+        if(!$post){
+            throw $this->createNotFoundException('Post not found');
+        }
+
+        $id = $post->getAuthor()->getId();
+
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)->find($id);
+
+        return $this->render('posts/admin-post-one.html.twig', ['post' =>$post, 'user'=>$user]);
+    }
+
 
 }

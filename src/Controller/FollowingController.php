@@ -64,4 +64,24 @@ class FollowingController extends Controller
             ['username' => $userToUnfollow->getUsername()]
         );
     }
+
+    /**
+     * @Route("/unfollow-my-profile/{id}", name="following_unfollow_my_profile")
+     */
+    public function unFollowMyProfile(User $userToUnfollow)
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $currentUser->getFollowing()
+            ->removeElement($userToUnfollow);
+
+        $this->getDoctrine()
+            ->getManager()
+            ->flush();
+
+        return $this->redirectToRoute(
+            'edit_my_profile',
+            ['username' => $userToUnfollow->getUsername()]
+        );
+    }
 }

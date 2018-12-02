@@ -18,7 +18,7 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('posts_list') }}">All Posts</a>
                 </li>
                 <li class="nav-item">
@@ -39,10 +39,16 @@
                 {% endif %}
                 {% if is_granted('ROLE_ADMIN') %}
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ path('posts_admin_list') }}">All Posts for Admin</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ path('admin_page') }}">Administration</a>
                     </li>
                 {% endif %}
                 {% if is_granted('ROLE_MODERATOR') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('posts_admin_list') }}">All Posts for Moderator</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('admin_page') }}">Administration</a>
                     </li>

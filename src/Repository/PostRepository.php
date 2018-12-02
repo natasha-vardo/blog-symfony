@@ -91,5 +91,15 @@ class PostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByDateAdmin()
+    {
+        return $this->createQueryBuilder('post')
+            ->join('post.author', 'username')
+            ->orderBy('post.created', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 
 }

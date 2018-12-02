@@ -75,7 +75,7 @@ class UpdateUserController extends AbstractController
         }
 
         return $this->render('users/edit-my-profile.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(), 'user' =>$updateUser
         ));
     }
 }
