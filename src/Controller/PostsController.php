@@ -123,7 +123,7 @@ class PostsController extends Controller
     public function showPopular(Request $request)
     {
         $postdata = $this->getDoctrine()
-            ->getRepository(Post::class)->findByLikes();
+            ->getRepository(Post::class)->findSortedByLikes();
 
         $paginator  = $this->get('knp_paginator');
 

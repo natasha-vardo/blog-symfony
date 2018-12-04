@@ -11,7 +11,9 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Form\PostType;
+use App\Form\UpdateType;
 use App\Form\UserType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Entity\Post;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -43,6 +45,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-posts", name="admin_page_posts")
      */
     public function showPosts(Request $request)
@@ -65,6 +68,7 @@ class AdministrationController extends Controller
     /**
      * @Route("/admin-page-posts/delete/{id}", name="admin_delete_post")
      * @Method({"DELETE"})
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      */
     public function deletePost(Request $request, $id)
     {
@@ -79,6 +83,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-posts/blocked/{id}", name="admin_blocked_posts")
      */
     public function blockedPosts(Request $request, $id)
@@ -105,6 +110,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-posts/unblocked/{id}", name="admin_unblocked_posts")
      */
     public function unblockedPosts(Request $request, $id)
@@ -132,6 +138,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-posts/edit/{id}", name="admin_edit_posts")
      */
     public function editPost(Request $request, $id)
@@ -139,41 +146,45 @@ class AdministrationController extends Controller
 
         $entityManager = $this->getDoctrine()->getManager();
 
-        $post = new Post();
+        $post = $this->getDoctrine()->getRepository(Post::class)->find($id);
 
-        $updatePost = $this->getDoctrine()->getRepository(Post::class)->find($id);
-
-        $form = $this->createFormBuilder($updatePost)
-            ->add('title', TextType::class)
-            ->add('description', TextType::class)
-            ->add('content', TextareaType::class, ['attr' => ['cols' => '50', 'rows' => '7']])
-            //->add('image', File::class, ['data_class' => null])
-            ->getForm();
+        $form = $this->createForm(UpdateType::class, $post);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
-          /*  $image = $post->getImage();
+            $image = $form->get('image')->getData();
 
-            $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
+            if ($image instanceof UploadedFile) {
+                $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
 
-            try {
-                $image->move(
-                    $this->getParameter('uploads_images'),
-                    $imageName
-                );
-            } catch (FileException $e) {
-                return new Response('<html><body>Error!</body></html>');
+                try {
+                    $image->move(
+                        $this->getParameter('uploads_images'),
+                        $imageName
+                    );
+                    //todo: delete current image
+                } catch (FileException $e) {
+                    return new Response('<html><body>Error!</body></html>');
+                }
+
+                $post->setImage($imageName);
             }
 
-            //$post->setImage($imageName);
-            $post->setImage(
-                new File($this->getParameter('uploads_images').'/'.$post->getImage())
-            );*/
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($updatePost);
             $entityManager->flush();
-            return $this->redirectToRoute('my_post');
+
+            $postdata = $this->getDoctrine()
+                ->getRepository(Post::class)->findAll();
+
+            $paginator  = $this->get('knp_paginator');
+
+            $post = $paginator->paginate(
+                $postdata,
+                $request->query->getInt('page', 1),
+                10
+            );
+            return $this->redirectToRoute('admin_page_posts', ['post' =>$post]);
         }
 
         return $this->render('admin/admin-page-edit-posts.html.twig', array(
@@ -191,6 +202,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-users", name="admin_page_users")
      */
     public function showUsers(Request $request)
@@ -213,6 +225,7 @@ class AdministrationController extends Controller
     /**
      * @Route("/admin-page-users/delete/{id}", name="admin_delete_user")
      * @Method({"DELETE"})
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      */
     public function deleteUser(Request $request, $id)
     {
@@ -228,6 +241,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-users/blocked/{id}", name="admin_blocked_users")
      */
     public function blockedUsers(Request $request, $id)
@@ -255,6 +269,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-users/unblocked/{id}", name="admin_unblocked_users")
      */
     public function unblockedUsers(Request $request, $id)
@@ -282,6 +297,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/admin-page-users/edit/{id}", name="admin_edit_users")
      */
     public function editUsers(Request $request, $id) {
@@ -321,7 +337,17 @@ class AdministrationController extends Controller
         if($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($updateUser);
             $entityManager->flush();
-            return $this->redirectToRoute('admin_page');
+            $userdata = $this->getDoctrine()
+                ->getRepository(User::class)->findAll();
+
+            $paginator  = $this->get('knp_paginator');
+
+            $user = $paginator->paginate(
+                $userdata,
+                $request->query->getInt('page', 1),
+                10
+            );
+            return $this->redirectToRoute('admin_page_users', ['user' =>$user]);
         }
 
         return $this->render('admin/admin-page-edit.html.twig', array(
@@ -330,6 +356,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/posts-admin/blocked/{id}", name="admin_block_posts")
      */
     public function blockedPostsAllPosts(Request $request, $id)
@@ -356,6 +383,7 @@ class AdministrationController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
      * @Route("/posts-admin/unblocked/{id}", name="admin_unblock_posts")
      */
     public function unblockedPostsAllPosts(Request $request, $id)
@@ -380,5 +408,21 @@ class AdministrationController extends Controller
         );
 
         return $this->render('posts/admin-posts.html.twig', ['post' =>$post]);
+    }
+
+    /**
+     * @Security("is_granted('ROLE_MODERATOR', 'ROLE_ADMIN')")
+     * @Route("/admin-page-users/make-blogger/{id}", name="make_blogger")
+     */
+    public function makeBlogger(Request $request, $id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $blockUser = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        $blockUser->setRoles(['ROLE_BLOGGER']);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('admin_page_users');
     }
 }

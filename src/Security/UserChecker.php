@@ -23,7 +23,7 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if ($user->getIsActive()!== true) {
+        if (!$user->getIsActive()) {
             throw new CustomUserMessageAuthenticationException(
                 'Your account was blocked. Sorry about that!'
             );

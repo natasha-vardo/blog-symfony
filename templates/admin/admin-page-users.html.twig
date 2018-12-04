@@ -35,7 +35,7 @@
                             {% else %}
                                 Blocked user
                             {% endif %}</td>
-                        <td>{#{{ users.roles}}#}</td>
+                        <td>{{ users.roles[0]}}</td>
                         <td>{% if users.isactive == true %}
                                 <a href="{{ path('admin_blocked_users', {'id': users.id }) }}"
                                    class="btn btn-secondary btn-sm">Block</a>
@@ -43,7 +43,7 @@
                                 <a href="{{ path('admin_unblocked_users', {'id': users.id }) }}"
                                    class="btn btn-success btn-sm">Unblock</a>
                             {% endif %}</td>
-                        <td><a href="#" class="btn btn-outline-success btn-sm">Make Blogger</a></td>
+                        <td><a href="{{ path('make_blogger', {'id': users.id }) }}" class="btn btn-outline-success btn-sm">Make Blogger</a></td>
                         <td>{% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('admin_edit_users', {'id': users.id }) }}" class="btn btn-primary btn-sm">Edit</a>
                             {% endif %}

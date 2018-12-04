@@ -37,14 +37,17 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
-    public function findByLikes()
+    public function findSortedByLikes()
     {
-        return $this->createQueryBuilder('post')
+        return $result = $this->createQueryBuilder('post')
+            ->addSelect('count(likes) as numberOfLikes')
             ->join('post.author', 'username')
-            ->orderBy('post.created', 'DESC')
+            ->join('post.likedBy', 'likes')
+            ->orderBy('numberOfLikes', 'DESC')
             ->where('post.isActive = :active')
             ->setParameter('active', 1)
             ->andWhere('post.created > :date')
+            ->groupBy('post')
             ->setParameter('date', date('Y-m-d H:i:s', time() - 86400 * 7))
             ->getQuery()
             ->getResult()

@@ -180,6 +180,10 @@ class User implements UserInterface, \Serializable
     {
         $this->password = $password;
     }
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+    }
 
     public function getRoles()
     {

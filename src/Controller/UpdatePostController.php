@@ -10,22 +10,15 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Post;
-use App\Form\PostType;
-use Symfony\Component\HttpFoundation\File\File;
+use App\Form\UpdateType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
-use App\Form\UserType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class UpdatePostController extends AbstractController
@@ -36,42 +29,48 @@ class UpdatePostController extends AbstractController
      */
     public function editPost(Request $request, $id)
     {
-
         $entityManager = $this->getDoctrine()->getManager();
 
-        $post = new Post();
+        $post = $this->getDoctrine()->getRepository(Post::class)->find($id);
 
-        $updatePost = $this->getDoctrine()->getRepository(Post::class)->find($id);
-
-        $form = $this->createFormBuilder($updatePost)
-            ->add('title', TextType::class)
-            ->add('description', TextType::class)
-            ->add('content', TextareaType::class, ['attr' => ['cols' => '50', 'rows' => '7']])
-            ->add('image', FileType::class, ['data_class' => null])
-            ->getForm();
+        $form = $this->createForm(UpdateType::class, $post);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('image')->getData();
 
-            $image = $post->getImage();
+            if ($image instanceof UploadedFile) {
+                $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
 
-            $imageName = $this->generateUniqueFileName().'.'.$image->guessExtension();
+                try {
+                    $image->move(
+                        $this->getParameter('uploads_images'),
+                        $imageName
+                    );
+                    //todo: delete current image
+                    //dump($image->temp);
+                    //exit();
+                    //$filename = $media->getName();
 
-            try {
-                $image->move(
-                    $this->getParameter('uploads_images'),
-                    $imageName
-                );
-            } catch (FileException $e) {
-                return new Response('<html><body>Error!</body></html>');
+                    //$filesystem = new Filesystem();
+                    //$filesystem->remove($image);
+                    /*if  ( isset ($image))  {
+                        $entityManager->remove($post->getImage());
+                    }*/
+
+                      if(file_exists($image)) {
+                        if ($image = $this->getAbsolutePath()) {
+                            unlink($image);
+                        }
+    }
+                } catch (FileException $e) {
+                    return new Response('<html><body>Error!</body></html>');
+                }
+
+                $post->setImage($imageName);
             }
 
-            //$post->setImage($imageName);
-            $post->setImage(
-                new File($this->getParameter('uploads_images').'/'.$post->getImage())
-            );
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($updatePost);
             $entityManager->flush();
             return $this->redirectToRoute('my_post');
         }
@@ -79,6 +78,21 @@ class UpdatePostController extends AbstractController
         return $this->render('posts/edit-post.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+
+    public function getAbsolutePath()
+    {
+        return null === $this->logo ? null : $this->getUploadRootDir().'/'.$this->logo;
+    }
+
+    protected function getUploadRootDir()
+    {
+        return __DIR__.'/../../../../public/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        return 'uploads/image';
     }
 
     /**
