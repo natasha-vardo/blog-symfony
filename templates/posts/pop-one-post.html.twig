@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts list{% endblock %}
+{% block body %}
+
+    <div class="card-group py-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ user.username }}
+                    <small class="text-muted">· <a href="{{ path('blogger_post', {'username': user.username })}}">@{{ user.username }}</a></small>
+                </h5>
+
+                {% if is_granted('ROLE_USER') and user != app.user %}
+                    {% if user.followers.contains(app.user) == false %}
+                        <a href="{{ path('following_follow', {'id': user.id}) }}"
+                           class="btn btn-outline-primary">Follow</a>
+                    {% else %}
+                        <a href="{{ path('following_unfollow', {'id': user.id}) }}"
+                           class="btn btn-outline-danger">Unfollow</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <h1>Post {{ post.title }}</h1>
+    <hr>
+    Created: {{ post.created| date("d.m.Y") }}<br>
+    Author: <a href="{{ path('blogger_post', {'username': user.username })}}">@{{ user.username }}</a><br>
+    Description: {{ post.description }}<br>
+    Content: {{ post.content }}<br>
+    {% if post.image is empty %}
+        <img src="{{ asset('uploads/images/noimage.jpg') }}" height="450px"/><br>
+    {% else %}
+        <img src="{{ asset('uploads/images/'~post.image) }}" height="450px"/><br>
+    {% endif %}
+
+    {% set isLiked = post.getLikedBy.contains(app.user) %}
+
+    <div class="pt-2">
+        <button style="display: {% if not isLiked %}block{% else %}none{% endif %}"
+                class="btn btn-outline-primary btn-sm" id="like">Like
+            <span class="badge badge-light" id="likes-like">{{ post.getLikedBy.count }}</span>
+        </button>
+
+        <button style="display: {% if isLiked %}block{% else %}none{% endif %}"
+                class="btn btn-outline-danger btn-sm" id="unlike">Unlike
+            <span class="badge badge-light" id="likes-unlike">{{ post.getLikedBy.count }}</span>
+        </button>
+    </div>
+    <br>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        var likeButton = document.getElementById('like');
+        var unlikeButton = document.getElementById('unlike');
+
+        addOnClick(
+            likeButton,
+            unlikeButton,
+            document.getElementById('likes-unlike'),
+            '{{ path('likes_like', {'id': post.id}) }}'
+        );
+
+        addOnClick(
+            unlikeButton,
+            likeButton,
+            document.getElementById('likes-like'),
+            '{{ path('likes_unlike', {'id': post.id}) }}'
+        );
+
+        function switchButtons(button, oppositeButton) {
+            button.disabled = false;
+            button.style.display = 'none';
+            oppositeButton.style.display = 'block';
+        }
+
+        function addOnClick(button, oppositeButton, likeCount, path) {
+            button.addEventListener('click', function (event) {
+                {% if not app.user %}
+                return window.location.replace('{{ path('user_registration') }}');
+                {% endif %}
+
+                button.disabled = true;
+
+                fetch(path, {'credentials': 'include'}).then(function (response) {
+                    response.json().then(function (json) {
+                        likeCount.innerText = json.count;
+                        switchButtons(button, oppositeButton);
+                    })
+                }).catch(function () {
+                    switchButtons(button, oppositeButton);
+                });
+
+                event.preventDefault();
+            });
+        }
+    </script>
+
+{% endblock %}

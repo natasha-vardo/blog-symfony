@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My posts{% endblock %}
+{% block body %}
+    <div id="postdata">
+    <ul>
+    {% for posts in post %}
+        <li>
+        <h4>Post {{ posts.title }}</h4>
+        Description: {{ posts.description }}<br>
+        Author:{{ posts.author.username }}<br>
+        {{ posts.created| date("d.m.Y") }}<br>
+        {% if posts.image is empty %}
+            <img src="{{ asset('uploads/images/noimage.jpg') }}" height="100px"/><br>
+        {% else %}
+            <img src="{{ asset('uploads/images/'~posts.image) }}" height="100px"/><br>
+        {% endif %}
+        Likes: {{ posts.getLikedBy.count }}<br>
+        {% if posts.isactive == true %}
+            Active post <br>
+        {% else %}
+            Blocked post <br>
+        {% endif %}
+
+        <a class="btn btn-outline-primary" href="{{ path('edit_post', {'id': posts.id })}}">Edit</a>
+            <a class="btn btn-danger delete-post" href="#" data-id="{{ posts.id }}">Delete</a>
+            <hr>
+        </li>
+    {% endfor %}
+    </ul>
+    </div>
+    <div class="navigation">
+        {{ knp_pagination_render(post) }}
+    </div>
+
+{% endblock %}
+
+        {% block javascripts %}
+            <script src="{{ asset('js/main.js') }}"></script>
+        {% endblock %}

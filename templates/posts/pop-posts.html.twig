@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts list{% endblock %}
+{% block body %}
+    <ul>
+    {% for posts in post %}
+        <li>
+        <h4><a href="{{ path('pop_one_post', {'id': posts[0].id })}}">Post: {{ posts[0].title }}</a></h4>
+        Description: {{ posts[0].description }}<br>
+        Author: <a href="{{ path('blogger_post', {'username': posts[0].author.username })}}">@{{ posts[0].author.username }}</a><br>
+        {{ posts[0].created| date("d.m.Y") }}<br>
+        {% if posts[0].image is empty %}
+            <img src="{{ asset('uploads/images/noimage.jpg') }}" height="100px"/><br>
+        {% else %}
+            <img src="{{ asset('uploads/images/'~posts[0].image) }}" height="100px"/><br>
+        {% endif %}
+        Likes: {{ posts.numberOfLikes }}<br>
+        <hr>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <div class="navigation">
+        {{ knp_pagination_render(post) }}
+    </div>
+{% endblock %}
